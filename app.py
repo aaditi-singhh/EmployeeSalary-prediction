@@ -25,7 +25,7 @@ with st.form("prediction_form"):
     capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
     hours_per_week = st.slider("Hours per Week", 1, 100, 40)
     native_country = st.selectbox("Native Country", list(encoders['native-country'].keys()))
-
+    submit = st.form_submit_button("Submit") 
     submit = st.form_submit_button("Predict Salary")  # ✅ Required submit button
 
 # 🚀 When user clicks submit
