@@ -23,7 +23,7 @@ employee-salary-prediction/
 
 ## 👩‍💻 Built By
 **Aditi Singh**  
-College: ITER, SOA University
+ITER, SOA University
 
 ---
 
@@ -100,6 +100,7 @@ Make sure `requirements.txt` contains:
 ```text
 streamlit
 pandas
+numpy
 scikit-learn
 joblib
 ```
