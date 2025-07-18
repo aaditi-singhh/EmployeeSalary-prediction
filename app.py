@@ -25,8 +25,8 @@ with st.form("prediction_form"):
     occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
     relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
     race = st.selectbox("Race", list(encoders['race'].keys()))
-    # Corrected 'Sex' to 'sex' (lowercase 's') here
-    sex = st.radio("Sex", list(encoders['sex'].keys()))
+    # Reverted to 'Sex' (capital 'S') to match common .pkl file naming if that's how it was saved
+    sex = st.radio("Sex", list(encoders['Sex'].keys()))
     capital_gain = st.number_input("Capital Gain", min_value=0, value=0)
     capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
     hours_per_week = st.slider("Hours per Week", 1, 100, 40)
@@ -45,8 +45,8 @@ if submit:
             encoders['occupation'][occupation],
             encoders['relationship'][relationship],
             encoders['race'][race],
-            # Corrected 'Sex' to 'sex' (lowercase 's') here
-            encoders['sex'][sex],
+            # Reverted to 'Sex' (capital 'S') here
+            encoders['Sex'][sex],
             capital_gain,
             capital_loss,
             hours_per_week,
