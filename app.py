@@ -19,7 +19,7 @@ with st.form("prediction_form"):
     occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
     relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
     race = st.selectbox("Race", list(encoders['race'].keys()))
-   fnlwgt = st.number_input("Final Weight (fnlwgt)", min_value=0, value=100000)
+ 
 
     capital_gain = st.number_input("Capital Gain", min_value=0, value=0)
     capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
@@ -27,12 +27,12 @@ with st.form("prediction_form"):
     native_country = st.selectbox("Native Country", list(encoders['native-country'].keys()))
     
     submit = st.form_submit_button("Predict Salary")
-
+print(X.columns.tolist()) 
 if submit:
     try:
        input_data = [[
     age,
-    fnlwgt,  # ✅ New field added here
+ 
     encoders['workclass'][workclass],
     encoders['education'][education],
     education_num,
