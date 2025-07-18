@@ -1,27 +1,23 @@
 import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
-import joblib
 
-# Load dataset
+# Load and prepare your dataset
 df = pd.read_csv("adult 3.csv")
 
-# Lowercase all column names (to avoid KeyErrors in app)
+# Lowercase all column names
 df.columns = df.columns.str.lower()
 
-# Clean missing data
-df.replace("?", np.nan, inplace=True)
+# Handle missing values
+df.replace("?", pd.NA, inplace=True)
 df.dropna(inplace=True)
 
-# Drop unnecessary column if present
+# Drop unnecessary columns
 if 'fnlwgt' in df.columns:
-    df.drop('fnlwgt', axis=1, inplace=True)
+    df.drop(['fnlwgt'], axis=1, inplace=True)
 
-# Label encode categorical columns
+# Encode categorical columns
 label_encoders = {}
-for col in df.select_dtypes(include='object').columns:
+for col in df.select_dtypes(include='object'):
     le = LabelEncoder()
     df[col] = le.fit_transform(df[col])
     label_encoders[col] = dict(zip(le.classes_, le.transform(le.classes_)))
@@ -29,22 +25,50 @@ for col in df.select_dtypes(include='object').columns:
 # Save encoders
 joblib.dump(label_encoders, 'encoders.pkl')
 
-# Split features and target
-X = df.drop("income", axis=1)
+# Feature/Target split
+x = df.drop("income", axis=1)
 y = df["income"]
 
-# Standardize features
+# Scale features
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-joblib.dump(scaler, 'scaler.pkl')
+x = scaler.fit_transform(x)
+joblib.dump(scaler, "scaler.pkl")
 
-# Train/test split
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import joblib
 
-# Train KNN model
-model = KNeighborsClassifier(n_neighbors=5)
-model.fit(X_train, y_train)
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-# Save model
-joblib.dump(model, 'knn_salary_model.pkl')
-print("✅ Model training complete and saved!")
+# Define models
+models = {
+    "LogisticRegression": LogisticRegression(max_iter=1000),
+    "RandomForest": RandomForestClassifier(),
+    "KNN": KNeighborsClassifier(),
+    "SVM": SVC(),
+    "GradientBoosting": GradientBoostingClassifier()
+}
+
+results = {}
+
+# Train and evaluate
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    preds = model.predict(X_test)
+    acc = accuracy_score(y_test, preds)
+    results[name] = acc
+    print(f"{name}: {acc:.4f}")
+
+# Get best model
+best_model_name = max(results, key=results.get)
+best_model = models[best_model_name]
+print(f"\n✅ Best model: {best_model_name} with accuracy {results[best_model_name]:.4f}")
+
+# Save the best model
+joblib.dump(best_model, "best_model.pkl")
+print("✅ Saved best model as best_model.pkl")
