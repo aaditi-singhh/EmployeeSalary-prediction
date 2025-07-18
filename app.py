@@ -19,7 +19,8 @@ with st.form("prediction_form"):
     occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
     relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
     race = st.selectbox("Race", list(encoders['race'].keys()))
-   
+   fnlwgt = st.number_input("Final Weight (fnlwgt)", min_value=0, value=100000)
+
     capital_gain = st.number_input("Capital Gain", min_value=0, value=0)
     capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
     hours_per_week = st.slider("Hours per Week", 1, 100, 40)
@@ -29,21 +30,23 @@ with st.form("prediction_form"):
 
 if submit:
     try:
-        input_data = [[
-            age,
-            encoders['workclass'][workclass],
-            encoders['education'][education],
-            education_num,
-            encoders['marital-status'][marital_status],
-            encoders['occupation'][occupation],
-            encoders['relationship'][relationship],
-            encoders['race'][race],
-            
-            capital_gain,
-            capital_loss,
-            hours_per_week,
-            encoders['native-country'][native_country]
-        ]]
+       input_data = [[
+    age,
+    fnlwgt,  # ✅ New field added here
+    encoders['workclass'][workclass],
+    encoders['education'][education],
+    education_num,
+    encoders['marital-status'][marital_status],
+    encoders['occupation'][occupation],
+    encoders['relationship'][relationship],
+    encoders['race'][race],
+    encoders['sex'][sex],
+    capital_gain,
+    capital_loss,
+    hours_per_week,
+    encoders['native-country'][native_country]
+]]
+
         input_scaled = scaler.transform(input_data)
         prediction = model.predict(input_scaled)[0]
         result = ">50K" if prediction == 1 else "<=50K"
