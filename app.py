@@ -2,15 +2,13 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load model, scaler, encoders
+# Load model files
 model = joblib.load("knn_salary_model.pkl")
 scaler = joblib.load("scaler.pkl")
 encoders = joblib.load("encoders.pkl")
 
-st.title("💼 Employee Salary Prediction App")
-st.markdown("Enter employee details to predict if their salary is >50K or <=50K.")
+st.title("💼 Employee Salary Prediction")
 
-# Streamlit form with submit button
 with st.form("prediction_form"):
     age = st.slider("Age", 17, 90, 30)
     workclass = st.selectbox("Workclass", list(encoders['workclass'].keys()))
@@ -24,13 +22,11 @@ with st.form("prediction_form"):
     capital_loss = st.number_input("Capital Loss", 0)
     hours_per_week = st.slider("Hours per Week", 1, 100, 40)
     native_country = st.selectbox("Native Country", list(encoders['native-country'].keys()))
+    
+    submit = st.form_submit_button("Predict")  # ✅ REQUIRED
 
-    # ✅ Fixed: add submit button
-    submit = st.form_submit_button("Predict")
-
-# On submit: run prediction
 if submit:
-    input_df = pd.DataFrame([[
+    df = pd.DataFrame([[
         age,
         encoders['workclass'][workclass],
         encoders['education'][education],
@@ -45,7 +41,6 @@ if submit:
         encoders['native-country'][native_country]
     ]])
 
-    input_scaled = scaler.transform(input_df)
-    prediction = model.predict(input_scaled)[0]
-    result = ">50K" if prediction == 1 else "<=50K"
-    st.success(f"🎯 Predicted Salary: **{result}**")
+    df_scaled = scaler.transform(df)
+    result = model.predict(df_scaled)[0]
+    st.success(f"🎯 Predicted Salary: {'>50K' if result == 1 else '<=50K'}")
