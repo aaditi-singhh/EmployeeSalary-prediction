@@ -1,46 +1,126 @@
 # 💼 Employee Salary Prediction App
 
-This is a Machine Learning project that predicts whether an employee earns >50K or <=50K using various demographic and work-related features.
+This project predicts whether an employee's salary is **>50K or <=50K** using machine learning models trained on the **Adult Income Dataset**. It includes model training, data preprocessing, and a Streamlit web app for user interaction.
 
-**Developed by:** *Aditi Singh, Iter, SOA University*
+---
 
-Built using:
-- Python
-- K-Nearest Neighbors (KNN)
-- Streamlit
-- scikit-learn
+## 📁 Project Structure
 
-## 🚀 How to Run
-
-1. Clone the repository:
-```bash
-git clone https://github.com/your-username/employee-salary-prediction.git
-cd employee-salary-prediction
+```
+employee-salary-prediction/
+│
+├── app.py                  # Streamlit app for prediction
+├── train_model.py          # Model training & preprocessing script
+├── adult 3.csv             # Dataset used
+├── best_model.pkl          # Best performing ML model (saved)
+├── scaler.pkl              # StandardScaler for numeric features
+├── encoders.pkl            # Encoders for categorical features
+├── requirements.txt        # Required Python libraries
+└── README.md               # You're here!
 ```
 
-2. Install dependencies:
+---
+
+## 👩‍💻 Built By
+**Aditi Singh**  
+College: ITER, SOA University
+
+---
+
+## 🧠 Model Training
+
+- Categorical features are encoded using `LabelEncoder`.
+- Features are standardized using `StandardScaler`.
+- Multiple models were tested:
+  - Logistic Regression
+  - Random Forest
+  - KNN
+  - SVM
+  - Gradient Boosting
+- The **best performing model** is saved as `best_model.pkl`.
+
+### Training Highlights:
+- Dataset cleaned (missing values removed)
+- Accuracy printed for all models
+- Best model auto-selected and saved
+
+---
+
+## 🚀 Streamlit Web App Features
+
+Users can input the following details:
+
+- Age
+- Final Weight (fnlwgt)
+- Workclass
+- Education
+- Education Number (Years)
+- Marital Status
+- Occupation
+- Relationship
+- Race
+- Capital Gain / Loss
+- Hours per Week
+- Native Country
+
+It returns a prediction:
+
+> ✅ **Predicted Salary: >50K or <=50K**
+
+---
+
+## 🛠️ How to Run Locally
+
+1. **Install dependencies**  
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the Streamlit app:
+2. **Run the app**
 ```bash
 streamlit run app.py
 ```
 
-## 📁 Project Files
+---
 
-- `adult 3.csv`: Cleaned dataset
-- `train_model.py`: Preprocessing + model training script
-- `app.py`: Streamlit web app
-- `encoders.pkl`: Label encoders
-- `scaler.pkl`: Feature scaler
-- `knn_salary_model.pkl`: Trained model
+## 🌐 How to Deploy on Streamlit Cloud
 
-## 🌐 Live Demo
+1. Push the project to a GitHub repo
+2. Go to [streamlit.io/cloud](https://streamlit.io/cloud)
+3. Connect GitHub → select repo → deploy
+4. App will run at:  
+   `https://<your-username>-<repo-name>.streamlit.app/`
 
-> Coming soon on Streamlit Cloud!
+---
 
-## ✨ Author
+## 📦 Requirements
 
-Made with ❤️ by [Aditi Singh](https://github.com/your-username)
+Make sure `requirements.txt` contains:
+
+```text
+streamlit
+pandas
+scikit-learn
+joblib
+```
+
+---
+
+## 📊 Dataset Reference
+
+- UCI Adult Income Dataset  
+- Contains demographic data to predict if income exceeds $50K/year  
+- Source: [https://archive.ics.uci.edu/ml/datasets/adult](https://archive.ics.uci.edu/ml/datasets/adult)
+
+---
+
+## 📌 Notes
+
+- All encoders use lowercase column names (`df.columns.str.lower()`).
+- The app currently logs encoder keys with `st.write()` for debugging. You may remove this before deployment.
+
+---
+
+## 📬 Contact
+
+If you liked this project or want to collaborate, feel free to connect with **Aditi Singh**.
