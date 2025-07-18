@@ -27,6 +27,7 @@ with st.form("prediction_form"):
     native_country = st.selectbox("Native Country", list(encoders['native-country'].keys()))
     
     submit = st.form_submit_button("Predict Salary")
+st.write("Encoder keys:", encoders.keys())
 
 if submit:
     try:
