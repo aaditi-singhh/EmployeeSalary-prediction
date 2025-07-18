@@ -20,7 +20,7 @@ with st.form("prediction_form"):
     age = st.slider("Age", 17, 90, 30)
     workclass = st.selectbox("Workclass", list(encoders['workclass'].keys()))
     education = st.selectbox("Education", list(encoders['education'].keys()))
-    education_num = st.slider("Education Number (Years of Education)", 1, 16, 10)
+    education-num = st.slider("Education Number (Years of Education)", 1, 16, 10)
     marital_status = st.selectbox("Marital Status", list(encoders['marital-status'].keys()))
     occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
     relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
@@ -40,7 +40,7 @@ if submit:
             age,
             encoders['workclass'][workclass],
             encoders['education'][education],
-            education_num,
+            education-num,
             encoders['marital-status'][marital_status],
             encoders['occupation'][occupation],
             encoders['relationship'][relationship],
@@ -56,8 +56,8 @@ if submit:
         # Ensure input_data is a DataFrame or NumPy array if scaler expects it
         # Pandas DataFrame is often safer for scikit-learn pipelines
         input_df = pd.DataFrame(input_data, columns=[
-            'age', 'workclass', 'education', 'education_num', 'marital-status',
-            'occupation', 'relationship', 'race', 'sex', 'capital_gain',
+            'age', 'workclass', 'education', 'education-num', 'marital-status',
+            'occupation', 'relationship', 'race',  'capital_gain',
             'capital_loss', 'hours_per_week', 'native-country'
         ])
 
