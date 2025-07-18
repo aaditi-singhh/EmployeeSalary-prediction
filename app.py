@@ -2,60 +2,56 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load the trained model
-model = joblib.load("best_model.pkl")
+# Load saved best model and encoders
+model = joblib.load("best_model.pkl")        # ✅ Best model saved from training script
+scaler = joblib.load("scaler.pkl")
+encoders = joblib.load("encoders.pkl")
 
-st.set_page_config(page_title="Employee Salary Classification", page_icon="💼", layout="centered")
+st.set_page_config(page_title="Salary Predictor", layout="centered")
+st.title("💼 Employee Salary Prediction App")
+st.markdown("Enter employee details below to predict if salary is **>50K** or **<=50K**.")
 
-st.title("💼 Employee Salary Classification App")
-st.markdown("Predict whether an employee earns >50K or ≤50K based on input features.")
+# 🔽 FORM STARTS HERE
+with st.form("prediction_form"):
+    age = st.slider("Age", 17, 90, 30)
+    workclass = st.selectbox("Workclass", list(encoders['workclass'].keys()))
+    education = st.selectbox("Education", list(encoders['education'].keys()))
+    marital_status = st.selectbox("Marital Status", list(encoders['marital-status'].keys()))
+    occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
+    relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
+    race = st.selectbox("Race", list(encoders['race'].keys()))
+    sex = st.radio("Sex", list(encoders['sex'].keys()))
+    capital_gain = st.number_input("Capital Gain", min_value=0, value=0)
+    capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
+    hours_per_week = st.slider("Hours per Week", 1, 100, 40)
+    native_country = st.selectbox("Native Country", list(encoders['native-country'].keys()))
 
-# Sidebar inputs (these must match your training feature columns)
-st.sidebar.header("Input Employee Details")
+    submit = st.form_submit_button("Predict Salary")  # ✅ Required submit button
 
-# ✨ Replace these fields with your dataset's actual input columns
-age = st.sidebar.slider("Age", 18, 65, 30)
-education = st.sidebar.selectbox("Education Level", [
-    "Bachelors", "Masters", "PhD", "HS-grad", "Assoc", "Some-college"
-])
-occupation = st.sidebar.selectbox("Job Role", [
-    "Tech-support", "Craft-repair", "Other-service", "Sales",
-    "Exec-managerial", "Prof-specialty", "Handlers-cleaners", "Machine-op-inspct",
-    "Adm-clerical", "Farming-fishing", "Transport-moving", "Priv-house-serv",
-    "Protective-serv", "Armed-Forces"
-])
-hours_per_week = st.sidebar.slider("Hours per week", 1, 80, 40)
-experience = st.sidebar.slider("Years of Experience", 0, 40, 5)
+# 🚀 When user clicks submit
+if submit:
+    try:
+        input_data = [[
+            age,
+            encoders['workclass'][workclass],
+            encoders['education'][education],
+            encoders['marital-status'][marital_status],
+            encoders['occupation'][occupation],
+            encoders['relationship'][relationship],
+            encoders['race'][race],
+            encoders['sex'][sex],
+            capital_gain,
+            capital_loss,
+            hours_per_week,
+            encoders['native-country'][native_country]
+        ]]
 
-# Build input DataFrame (⚠️ must match preprocessing of your training data)
-input_df = pd.DataFrame({
-    'age': [age],
-    'education': [education],
-    'occupation': [occupation],
-    'hours-per-week': [hours_per_week],
-    'experience': [experience]
-})
+        # Scale input data
+        input_scaled = scaler.transform(input_data)  # ✅ convert to NumPy array
+        prediction = model.predict(input_scaled)[0]
+        result = ">50K" if prediction == 1 else "<=50K"
 
-st.write("### 🔎 Input Data")
-st.write(input_df)
+        st.success(f"🎯 Predicted Salary: **{result}**")
 
-# Predict button
-if st.button("Predict Salary Class"):
-    prediction = model.predict(input_df)
-    st.success(f"✅ Prediction: {prediction[0]}")
-
-# Batch prediction
-st.markdown("---")
-st.markdown("#### 📂 Batch Prediction")
-uploaded_file = st.file_uploader("Upload a CSV file for batch prediction", type="csv")
-
-if uploaded_file is not None:
-    batch_data = pd.read_csv(uploaded_file)
-    st.write("Uploaded data preview:", batch_data.head())
-    batch_preds = model.predict(batch_data)
-    batch_data['PredictedClass'] = batch_preds
-    st.write("✅ Predictions:")
-    st.write(batch_data.head())
-    csv = batch_data.to_csv(index=False).encode('utf-8')
-    st.download_button("Download Predictions CSV", csv, file_name='predicted_classes.csv', mime='text/csv')
-
+    except Exception as e:
+        st.error(f"⚠️ Error occurred: {str(e)}")
