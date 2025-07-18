@@ -39,7 +39,7 @@ if submit:
             encoders['occupation'][occupation],
             encoders['relationship'][relationship],
             encoders['race'][race],
-            encoders['Sex'][Sex],
+            encoders['Sex'][sex],
             capital_gain,
             capital_loss,
             hours_per_week,
