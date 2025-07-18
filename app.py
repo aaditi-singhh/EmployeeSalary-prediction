@@ -3,12 +3,18 @@ import pandas as pd
 import joblib
 
 # Load trained model and preprocessing tools
-model = joblib.load("best_model.pkl")
-scaler = joblib.load("scaler.pkl")
-encoders = joblib.load("encoders.pkl")
+# Ensure these .pkl files are in the same directory as your app.py or provide full paths
+try:
+    model = joblib.load("best_model.pkl")
+    scaler = joblib.load("scaler.pkl")
+    encoders = joblib.load("encoders.pkl")
+except FileNotFoundError as e:
+    st.error(f"Error loading model or encoders: {e}. Make sure 'best_model.pkl', 'scaler.pkl', and 'encoders.pkl' are in the correct directory.")
+    st.stop() # Stop the app if essential files are missing
 
-st.set_page_config(page_title="Employee Salary Predictor")
+st.set_page_config(page_title="Employee Salary Predictor", layout="centered") # Added layout for better centering
 st.title("💼 Employee Salary Prediction App")
+st.markdown("Enter employee details below to predict if salary is **>50K** or **<=50K**.")
 
 with st.form("prediction_form"):
     age = st.slider("Age", 17, 90, 30)
@@ -19,6 +25,7 @@ with st.form("prediction_form"):
     occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
     relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
     race = st.selectbox("Race", list(encoders['race'].keys()))
+    # Corrected 'Sex' to 'sex' (lowercase 's') here
     sex = st.radio("Sex", list(encoders['sex'].keys()))
     capital_gain = st.number_input("Capital Gain", min_value=0, value=0)
     capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
@@ -38,15 +45,27 @@ if submit:
             encoders['occupation'][occupation],
             encoders['relationship'][relationship],
             encoders['race'][race],
+            # Corrected 'Sex' to 'sex' (lowercase 's') here
             encoders['sex'][sex],
             capital_gain,
             capital_loss,
             hours_per_week,
             encoders['native-country'][native_country]
         ]]
-        input_scaled = scaler.transform(input_data)
+
+        # Ensure input_data is a DataFrame or NumPy array if scaler expects it
+        # Pandas DataFrame is often safer for scikit-learn pipelines
+        input_df = pd.DataFrame(input_data, columns=[
+            'age', 'workclass', 'education', 'education_num', 'marital-status',
+            'occupation', 'relationship', 'race', 'sex', 'capital_gain',
+            'capital_loss', 'hours_per_week', 'native-country'
+        ])
+
+        input_scaled = scaler.transform(input_df) # Use input_df here
         prediction = model.predict(input_scaled)[0]
         result = ">50K" if prediction == 1 else "<=50K"
         st.success(f"🎯 Predicted Salary: **{result}**")
     except Exception as e:
-        st.error(f"⚠️ Error: {e}")
+        st.error(f"⚠️ An error occurred during prediction: {e}")
+        st.info("Please check the input values and ensure the loaded model and encoders are compatible.")
+
