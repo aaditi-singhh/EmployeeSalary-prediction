@@ -25,7 +25,7 @@ with st.form("prediction_form"):
     occupation = st.selectbox("Occupation", list(encoders['occupation'].keys()))
     relationship = st.selectbox("Relationship", list(encoders['relationship'].keys()))
     race = st.selectbox("Race", list(encoders['race'].keys()))
-    sex = st.radio("Sex", list(encoders['sex'].keys()))
+   
    
     capital_gain = st.number_input("Capital Gain", min_value=0, value=0)
     capital_loss = st.number_input("Capital Loss", min_value=0, value=0)
@@ -46,7 +46,7 @@ if submit:
             encoders['relationship'][relationship],
             encoders['race'][race],
             # Corrected 'Sex' to 'sex' (lowercase 's') here
-            encoders['sex'][sex],
+          
             capital_gain,
             capital_loss,
             hours_per_week,
