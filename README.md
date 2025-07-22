@@ -81,7 +81,9 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
----
+-or --
+pip install --force-reinstall pandas scikit-learn pyarrow 
+Run in terminal
 
 ## 🌐 How to Deploy on Streamlit Cloud
 
