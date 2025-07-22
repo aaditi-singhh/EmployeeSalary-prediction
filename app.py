@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load trained model and preprocessing tools
 model = joblib.load("best_model.pkl")
 scaler = joblib.load("scaler.pkl")
 encoders = joblib.load("encoders.pkl")
